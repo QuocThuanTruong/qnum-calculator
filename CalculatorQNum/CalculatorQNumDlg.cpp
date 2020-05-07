@@ -8,6 +8,8 @@
 #include "CalculatorQNumDlg.h"
 #include "afxdialogex.h"
 
+#pragma warning(disable : 4996)
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -56,7 +58,7 @@ CCalculatorQNumDlg::CCalculatorQNumDlg(CWnd* pParent /*=nullptr*/)
 	, edtOperand2(_T(""))
 	, edtResult(_T(""))
 {
-	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_hIcon = AfxGetApp()->LoadIcon(IDI_ICON1);
 }
 
 void CCalculatorQNumDlg::DoDataExchange(CDataExchange* pDX)
@@ -94,6 +96,8 @@ void CCalculatorQNumDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_CE, btnCE);
 	DDX_Control(pDX, IDC_BTN_BACK, btnBack);
 	DDX_Control(pDX, IDC_CB_BITWISE, cbBitwise);
+	DDX_Control(pDX, IDC_RD_ON, rdOn);
+	DDX_Control(pDX, IDC_RD_OFF, rdOff);
 }
 
 BEGIN_MESSAGE_MAP(CCalculatorQNumDlg, CDialogEx)
@@ -134,6 +138,10 @@ BEGIN_MESSAGE_MAP(CCalculatorQNumDlg, CDialogEx)
 	ON_EN_SETFOCUS(IDC_EDT_OPERAND_1, &CCalculatorQNumDlg::OnSetfocusEdtOperand1)
 	ON_EN_SETFOCUS(IDC_EDT_OPERAND_2, &CCalculatorQNumDlg::OnSetfocusEdtOperand2)
 	ON_CBN_SELCHANGE(IDC_CB_BITWISE, &CCalculatorQNumDlg::OnCbnSelchangeCbBitwise)
+	ON_BN_CLICKED(IDC_BTN_FILE_IN, &CCalculatorQNumDlg::OnBnClickedBtnFileIn)
+	ON_BN_CLICKED(IDC_BTN_FILE_OUT, &CCalculatorQNumDlg::OnBnClickedBtnFileOut)
+	ON_BN_CLICKED(IDC_RD_ON, &CCalculatorQNumDlg::OnBnClickedRdOn)
+	ON_BN_CLICKED(IDC_RD_OFF, &CCalculatorQNumDlg::OnBnClickedRdOff)
 END_MESSAGE_MAP()
 
 
@@ -173,6 +181,7 @@ BOOL CCalculatorQNumDlg::OnInitDialog()
 	// Khởi tạo các chế độ mặc định của ứng dụng là QInt và Dec
 	rdQInt.SetCheck(TRUE);
 	rdDec.SetCheck(TRUE);
+	rdOff.SetCheck(TRUE);
 	radioLastChose = IDC_RD_DEC;
 	dialogLastFocused = IDC_EDT_OPERAND_1;
 
@@ -183,6 +192,12 @@ BOOL CCalculatorQNumDlg::OnInitDialog()
 	cbOperator.AddString(L"-");
 	cbOperator.AddString(L"*");
 	cbOperator.AddString(L"/");
+	cbOperator.AddString(L">");
+	cbOperator.AddString(L"<");
+	cbOperator.AddString(L">=");
+	cbOperator.AddString(L"<=");
+	cbOperator.AddString(L"==");
+	cbOperator.AddString(L"!=");
 	cbOperator.SetCurSel(0);
 	
 	// Combo box converter exclude convert to Dec
@@ -206,6 +221,35 @@ BOOL CCalculatorQNumDlg::OnInitDialog()
 	// Vì đang ở Dec nên tắt những view không liên quan
 	enableHexKey(FALSE);
 	btnDot.EnableWindow(FALSE);
+	GetDlgItem(IDC_BTN_FILE_IN)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_BTN_FILE_OUT)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_TV_CHOOSE_FILE)->ShowWindow(SW_HIDE);
+
+	// Thiết lập font chữ
+	CFont m_font;
+	m_font.CreateFont(20, 0, 0, 0, FW_BOLD, 0, 0, 0, 0, 0, 0, 0, 0, L"Microsoft Sans Serif");
+	btn0.SetFont(&m_font);
+	btn1.SetFont(&m_font);
+	btn2.SetFont(&m_font);
+	btn3.SetFont(&m_font);
+	btn4.SetFont(&m_font);
+	btn5.SetFont(&m_font);
+	btn6.SetFont(&m_font);
+	btn7.SetFont(&m_font);
+	btn8.SetFont(&m_font);
+	btn9.SetFont(&m_font);
+	btnSign.SetFont(&m_font);
+	btnDot.SetFont(&m_font);
+	btnA.SetFont(&m_font);
+	btnB.SetFont(&m_font);
+	btnC.SetFont(&m_font);
+	btnD.SetFont(&m_font);
+	btnE.SetFont(&m_font);
+	btnF.SetFont(&m_font);
+
+	(GetDlgItem(IDC_EDT_OPERAND_1))->SetFont(&m_font);
+	(GetDlgItem(IDC_EDT_OPERAND_2))->SetFont(&m_font);
+	(GetDlgItem(IDC_EDT_RESULT))->SetFont(&m_font);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -266,6 +310,77 @@ void CCalculatorQNumDlg::OnOK()
 	OnBnClickedBtnResult();
 }
 
+//Hàm bắt sự kiện click button in file
+void CCalculatorQNumDlg::OnBnClickedBtnFileIn()
+{
+	CString filename;
+	char fileFilter[] = { "Text Files (*.txt)|*.txt|" };
+	CFileDialog dlg(TRUE, CString(".txt"), NULL, 0, CString(fileFilter));		// Mở dialog file để chọn file .txt
+
+	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"");
+
+	if (dlg.DoModal() == IDOK)													// Lấy đường dẫn file in và xuất ra operand 1
+	{
+		filename = dlg.GetPathName();
+		inFile = CW2A(filename);
+	}
+
+	edtOperand1.SetString(filename);
+	GetDlgItem(IDC_EDT_OPERAND_1)->SetWindowTextW(edtOperand1);
+}
+
+//Hàm bắt sự kiện click button out file
+void CCalculatorQNumDlg::OnBnClickedBtnFileOut()
+{
+	CString filename;
+	char fileFilter[] = { "Text Files (*.txt)|*.txt|" };
+	CFileDialog dlg(FALSE, CString(".txt"), NULL, 0, CString(fileFilter));		// Mở dialog file để lưu file .txt
+	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"");
+
+	if (dlg.DoModal() == IDOK)													// Lấy đường dẫn file in và xuất ra operand 2
+	{
+		filename = dlg.GetPathName();		
+		outFile = CW2A(filename);
+	}
+
+	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"executing....");
+	edtOperand2.SetString(filename);
+	GetDlgItem(IDC_EDT_OPERAND_2)->SetWindowTextW(edtOperand2);
+
+	OnBnClickedBtnResult();
+}
+
+//Hàm bắt sự kiện click radio button On - Bật chế độ chọn file
+void CCalculatorQNumDlg::OnBnClickedRdOn()
+{
+	OnBnClickedBtnCe();
+
+	GetDlgItem(IDC_BTN_FILE_IN)->ShowWindow(SW_SHOW);			// Hiển thị các mục cần thiết để chọn file
+	GetDlgItem(IDC_BTN_FILE_OUT)->ShowWindow(SW_SHOW);
+	GetDlgItem(IDC_TV_CHOOSE_FILE)->ShowWindow(SW_SHOW);
+
+	if (rdQFloat.GetCheck() == TRUE)							// Bật operand 2 bị ẩn ở QFloat
+	{
+		GetDlgItem(IDC_EDT_OPERAND_2)->EnableWindow();
+	}
+}
+
+//Hàm bắt sự kiện click radio button On - Tắt chế độ chọn file
+void CCalculatorQNumDlg::OnBnClickedRdOff()
+{
+	GetDlgItem(IDC_BTN_FILE_IN)->ShowWindow(SW_HIDE);			// Ẩn các mục cần thiết để chọn file
+	GetDlgItem(IDC_BTN_FILE_OUT)->ShowWindow(SW_HIDE);
+	GetDlgItem(IDC_TV_CHOOSE_FILE)->ShowWindow(SW_HIDE);
+
+	if (rdQFloat.GetCheck() == TRUE)							// Tăt operand 2 ở QFloat
+	{
+		GetDlgItem(IDC_EDT_OPERAND_2)->EnableWindow(FALSE);
+	}
+
+	OnBnClickedBtnCe();
+}
+
+
 // Bắt sự kiện click rdQInt -> Chuyển chế độ số nguyên
 void CCalculatorQNumDlg::OnBnClickedRdQint()
 {
@@ -318,7 +433,15 @@ void CCalculatorQNumDlg::OnBnClickedRdQfloat()
 	}
 
 	cbConvert.SetCurSel(0);
-	GetDlgItem(IDC_EDT_OPERAND_2)->EnableWindow(FALSE);
+
+	if (rdOn.GetCheck() == TRUE)							// Bật operand 2 bị ẩn ở QFloat
+	{
+		GetDlgItem(IDC_EDT_OPERAND_2)->EnableWindow();
+	}
+	else
+	{
+		GetDlgItem(IDC_EDT_OPERAND_2)->EnableWindow(FALSE);
+	}
 }
 
 // Bắt sự kiện click rdDec -> Chuyển cơ số 10
@@ -997,38 +1120,66 @@ void CCalculatorQNumDlg::OnBnClickedBtnSign()
 // Hàm bắt sự kiện click btnResult(dấu =) - Tính kết quả hoặc convert tương ứng
 void CCalculatorQNumDlg::OnBnClickedBtnResult()
 {
-	// Kiểm tra tính hợp lệ của Operand 1 và 2
-	if (!isValidOp1())			
+	// Nếu chế độ file được bật thì thực thi 
+	if (rdOn.GetCheck() == TRUE)
 	{
-		GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 is invalid!");
-		return;
-	}
+		inFile = CW2A (edtOperand1.GetString());
+		outFile = CW2A (edtOperand2.GetString());
 
-	if (!isValidOp2())
-	{
-		GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 2 is invalid!");
-		return;
-	}
+		GetDlgItem(IDC_EDT_RESULT)->BeginWaitCursor();
 
-	// Nếu chưa chọn operator hoặc convert hoặc bitwise thì sẽ thông báo
-	if (cbOperator.GetCurSel() == 0 && cbConvert.GetCurSel() == 0 && cbBitwise.GetCurSel() == 0 && rdQInt.GetCheck())
-	{
-		GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"You must choose --operator-- or --converter-- or --bitwise-- to calculate!");
-		return;
+		if (executeFile() == TRUE)
+		{
+			GetDlgItem(IDC_EDT_RESULT)->EndWaitCursor();
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"DONE!");
+		}
+		else
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"FAILED!");
+		}
 	}
+	else
+	{
+		// Kiểm tra tính hợp lệ của Operand 1 và 2
+		if (!isValidOp1())
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 is invalid!");
+			return;
+		}
 
-	// Tính toán hoặc chuyển cơ số tương ứng
-	if (!edtOperand1.IsEmpty() && !edtOperand2.IsEmpty() && cbOperator.GetCurSel() != 0)
-	{
-		calculateResult();
-	}
-	else if (!edtOperand1.IsEmpty() && ((cbConvert.GetCurSel() != 0 && rdQInt.GetCheck() == TRUE) || rdQFloat.GetCheck() == TRUE))
-	{
-		convertBaseResult();
-	}
-	else if (!edtOperand1.IsEmpty() && (!edtOperand2.IsEmpty() || cbBitwise.GetCurSel() == 4) && cbBitwise.GetCurSel() != 0)
-	{
-		doBitwise();
+		if (!isValidOp2())
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 2 is invalid!");
+			return;
+		}
+
+		// Nếu chưa chọn operator hoặc convert hoặc bitwise thì sẽ thông báo
+		if (cbOperator.GetCurSel() == 0 && cbConvert.GetCurSel() == 0 && cbBitwise.GetCurSel() == 0 && rdQInt.GetCheck())
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"You must choose --operator-- or --converter-- or --bitwise-- to calculate!");
+			return;
+		}
+
+		try
+		{
+			// Tính toán hoặc chuyển cơ số tương ứng
+			if (!edtOperand1.IsEmpty() && !edtOperand2.IsEmpty() && cbOperator.GetCurSel() != 0)
+			{
+				calculateResult();
+			}
+			else if (!edtOperand1.IsEmpty() && ((cbConvert.GetCurSel() != 0 && rdQInt.GetCheck() == TRUE) || rdQFloat.GetCheck() == TRUE))
+			{
+				convertBaseResult();
+			}
+			else if (!edtOperand1.IsEmpty() && (!edtOperand2.IsEmpty() || cbBitwise.GetCurSel() == 4) && cbBitwise.GetCurSel() != 0)
+			{
+				doBitwise();
+			}
+		}
+		catch (const char* msg)
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(CString(msg));
+		}
 	}
 }
 
@@ -1259,7 +1410,7 @@ void CCalculatorQNumDlg::calculateResult()
 {
 	string operand1 = CW2A (edtOperand1.GetString());
 	string operand2 = CW2A (edtOperand2.GetString());
-	string result;
+	string result = "";
 
 	if (rdQInt.GetCheck() == TRUE)
 	{
@@ -1283,22 +1434,43 @@ void CCalculatorQNumDlg::calculateResult()
 		case 3: // Operator *
 			_result = _operand_1 * _operand_2;
 			break;
-		case 4: // Operator 1
+		case 4: // Operator /
 			_result = _operand_1 / _operand_2;
+			break;
+		case 5: // Operator >
+			result = (_operand_1 > _operand_2) ? "true" : "false";
+			break;
+		case 6: // Operator <
+			result = (_operand_1 < _operand_2) ? "true" : "false";
+			break;
+		case 7: // Operator >=
+			result = (_operand_1 >= _operand_2) ? "true" : "false";
+			break;
+		case 8: // Operator <=
+			result = (_operand_1 <= _operand_2) ? "true" : "false";
+			break;
+		case 9: // Operator ==
+			result = (_operand_1 == _operand_2) ? "true" : "false";
+			break;
+		case 10: // Operator !=
+			result = (_operand_1 != _operand_2) ? "true" : "false";
 			break;
 		}
 
-		switch (getBase())								// Trả kết quả về hệ cơ số đã chọn
+		if (result == "")
 		{
-		case 10:
-			result = QInt::convertQIntToDec(_result);
-			break;
-		case 2:
-			result = QInt::convertQIntToBin(_result);
-			break;
-		case 16:
-			result = QInt::convertQIntToHex(_result);
-			break;
+			switch (getBase())								// Trả kết quả về hệ cơ số đã chọn
+			{
+			case 10:
+				result = QInt::convertQIntToDec(_result);
+				break;
+			case 2:
+				result = QInt::convertQIntToBin(_result);
+				break;
+			case 16:
+				result = QInt::convertQIntToHex(_result);
+				break;
+			}
 		}
 
 	}
@@ -1598,4 +1770,268 @@ void CCalculatorQNumDlg::doBitwise()
 
 	edtResult = CString(result.c_str());
 	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(edtResult);
+}
+
+/**
+ *	Hàm executeQInt - Hàm xử lý số QInt
+ *	@param	  string 		Chuỗi cần xử lý
+ *	@return	  none
+ */
+void CCalculatorQNumDlg::executeQInt(string srcQInt)
+{
+	string p1;
+	string p2;
+	string firstNum;
+	string secondNum;
+	string _operator = "";
+	stringstream lineProcessing;
+
+	QInt firstQNum;
+	QInt secondQNum;
+	int base_1;
+	int base_2;
+
+	const int uOpSize = 1;
+	string uOperator[] = { "~" };																								// Toán tử 1 ngôi
+	const int bOpSize = 17;
+	string bOperator[] = { "+", "-", "*", "/", "<", ">", "==", "<=", ">=", "=", "&", "|", "^", "<<", ">>", "rol", "ror" };		// Toán tử 2 ngôi
+
+	int operatorType = 0;								// Loại toán tử
+	int paramCount = 1;									// Số lượng tham số
+
+	for (int i = 0; i < srcQInt.size(); i++)			// Đếm số lượng tham số dựa vào đếm dấu space
+	{
+		if (srcQInt[i] == ' ')
+		{
+			paramCount++;
+		}
+	}
+
+	for (int i = 0; i < uOpSize; i++)					// Tìm toán tử 1 ngôi có trong mảng quy định
+	{
+		if (srcQInt.find(uOperator[i], 0) != string::npos)
+		{
+			operatorType = 1;
+			break;
+		}
+	}
+
+	for (int i = 0; i < bOpSize; i++)					// Tìm toán tử 2 ngôi có trong mảng quy định
+	{
+		int pos = srcQInt.find(bOperator[i], 0);
+
+		if (pos != string::npos)
+		{
+			if (srcQInt[pos - 1] == ' ' && srcQInt[pos + 1] == ' ')
+			{
+				operatorType = 2;
+				break;
+			}
+		}
+	}													// Nếu không có toán tử thì mặc định là 0
+
+	lineProcessing << srcQInt;							// Đọc dữ liệu vào bộ đệm
+
+	lineProcessing >> p1;								// Lấy chỉ thị p1 
+
+	if (paramCount - operatorType == 3)					// Lấy chỉ thị p2 nếu có
+	{													// VD: 2 10 1011 -> paramCount(3) - operatorType(0) = 3 -> Có p2
+		lineProcessing >> p2;							// VD: 
+	}
+	else												// Không thì cho p2 và p1 là như nhau tức là 2 nhập vào hệ cơ số X và xuất ra hệ cơ số X
+	{
+		p2 = p1;
+	}
+
+	switch (operatorType)								// Kiểm tra loại toán tử
+	{
+	case 0:												// Không có toán tử -> Lấy số đầu để chuyển cơ số
+		lineProcessing >> firstNum;
+		break;
+	case 1:												// Toán tử 1 ngôi -> lấy toán tử rồi đến số cần tính
+		lineProcessing >> _operator >> firstNum;
+		break;
+	case 2:												// Toán tử 2 ngôi -> lấy số đầu > toán tử > số sau
+		lineProcessing >> firstNum >> _operator >> secondNum;
+		break;
+	}
+
+	base_1 = stoi(p1);									// Chuyển đổi p1, p2 sang số nguyên
+	base_2 = stoi(p2);
+
+	try
+	{
+		firstQNum.scanQInt(firstNum, base_1);
+
+		if (_operator == "")							// Chuyển đổi cơ số và xuất ra
+		{
+			firstQNum.printQInt(base_2);
+		}
+		else if (_operator == "~")						// Tính NOT bit và xuất ra
+		{
+			(~firstQNum).printQInt(base_2);
+		}
+		else if (_operator == "+")						// Tính + và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum + secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "-")						// Tính - và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum - secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "*")						// Tính * và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum * secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "/")						// Tính / và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum / secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "<")						// So sánh < và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			cout << ((firstQNum < secondQNum) ? "true" : "false") << endl;
+		}
+		else if (_operator == ">")						// So sánh > và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			cout << ((firstQNum > secondQNum) ? "true" : "false") << endl;
+		}
+		else if (_operator == "<=")						// So sánh <= và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			cout << ((firstQNum <= secondQNum) ? "true" : "false") << endl;
+		}
+		else if (_operator == ">=")						// So sánh >= và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			cout << ((firstQNum >= secondQNum) ? "true" : "false") << endl;
+		}
+		else if (_operator == "==")						// So sánh == và xuất kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			cout << ((firstQNum == secondQNum) ? "true" : "false") << endl;
+		}
+		else if (_operator == "&")						// Tính AND bit và xuất ra kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum & secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "|")						// Tính OR bit và xuất ra kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum | secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "^")						// Tính XOR bit và xuất ra kết quả
+		{
+			secondQNum.scanQInt(secondNum, base_1);
+			(firstQNum ^ secondQNum).printQInt(base_2);
+		}
+		else if (_operator == "<<")						// Tính SHL bit và xuất ra kết quả
+		{
+			int num = stoi(secondNum);
+			(firstQNum << num).printQInt(base_2);
+		}
+		else if (_operator == ">>")						// Tính SHR bit và xuất ra kết quả
+		{
+			int num = stoi(secondNum);
+			(firstQNum >> num).printQInt(base_2);
+		}
+		else if (_operator == "rol")					// Tính ROL bit và xuất ra kết quả
+		{
+			int num = stoi(secondNum);
+			(firstQNum.rol(num)).printQInt(base_2);
+		}
+		else if (_operator == "ror")					// Tính ROR bit và xuất ra kết quả
+		{
+			int num = stoi(secondNum);
+			(firstQNum.ror(num)).printQInt(base_2);
+		}
+	}
+	catch (const char* msg)
+	{
+		cout << msg;
+	}
+}
+
+/**
+ *	Hàm executeQFloat - Hàm xử lý số QFloat
+ *	@param	  string 		Chuỗi cần xử lý
+ *	@return	  none
+ */
+void CCalculatorQNumDlg::executeQFloat(string srcQFloat)
+{
+	string p1;
+	string p2;
+	string convertedNum;
+	stringstream ssIn;
+
+	QFloat destNum;
+
+	int base_1;
+	int base_2;
+
+	ssIn << srcQFloat;								// Lấy dữ liệu cần xử lí
+
+	ssIn >> p1 >> p2 >> convertedNum;				// Tách 3 thành phần 
+
+	base_1 = stoi(p1);								// Chuyển p1, p2 sang số nguyên
+	base_2 = stoi(p2);
+
+	try
+	{
+		destNum.scanQFloat(convertedNum, base_1);	// Chuyển cơ số và xuất ra
+		destNum.printQFloat(base_2);
+	}
+	catch (const char* msg)
+	{
+		cout << msg;
+	}
+}
+
+/**
+ *	Hàm executeQFloat - Hàm xử lý số File theo QInt hoặc QFloat
+ *	@param	  none
+ *	@return	  none
+ */
+BOOL CCalculatorQNumDlg::executeFile()
+{
+	FILE* input = freopen(inFile.c_str(), "r", stdin);
+	FILE* output = freopen(outFile.c_str(), "w", stdout);
+
+	if (input && output)
+	{
+		cin.seekg(SEEK_SET);
+
+		if (rdQInt.GetCheck() == TRUE)
+		{
+			while (!cin.eof())
+			{
+				string srcQInt;
+				getline(cin, srcQInt);
+				executeQInt(srcQInt);
+			}
+		}
+
+		if (rdQFloat.GetCheck() == TRUE)
+		{
+			while (!cin.eof())
+			{
+				string strIn;
+				getline(cin, strIn);
+				executeQFloat(strIn);
+			}
+		}
+
+		fclose(input);
+		fclose(output);
+
+		return TRUE;
+	}
+
+	return FALSE;
 }

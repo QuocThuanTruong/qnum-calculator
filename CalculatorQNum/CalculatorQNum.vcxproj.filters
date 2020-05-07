@@ -83,5 +83,11 @@
     <Image Include="res\CalculatorQNum.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\ic_cal.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

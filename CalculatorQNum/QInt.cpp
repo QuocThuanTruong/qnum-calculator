@@ -8,7 +8,7 @@
 QInt::QInt()
 {
 	for (int i = 0; i < TOTAL_BLOCK; i++)		//Khởi tạo mỗi block bằng 0
-	{
+	{ 
 		this->data[i] = 0;
 	}
 }
@@ -19,7 +19,7 @@ QInt::QInt()
  *	@param	 const string&		Chuỗi số cần chuyển thành QInt
  *	@param	 const int			Hệ cơ số của chuỗi
  *	@return	 none
- */
+ */ 
 QInt::QInt(const string& src, const int base)
 {
 	switch (base)								// Gọi hàm chuyển với hệ cơ số tương ứng
@@ -269,11 +269,11 @@ QInt QInt::operator+(const QInt& other)
 	for (int i = 0; i < BIT_IN_QINT; i++)					// Cộng lần lượt các bit và lưu biến nhớ
 	{
 		temp = BitUtils::getBit(this->data, i) + BitUtils::getBit(num.data, i) + carry;
-		if (temp % 2 == 1)
+		if ( temp % 2 == 1)
 		{
 			BitUtils::setBit(result.data, i);
 		}
-		carry = temp / 2;
+		carry = temp/2;
 	}
 
 	return result;
@@ -282,8 +282,8 @@ QInt QInt::operator+(const QInt& other)
 
 /**
  *	operator- - Toán tử trừ 2 số QInt
- *	@param	 const QInt&    Số bị trừ
- *	@return	 QInt			Kết quả sau khi trừ
+ *	@param	 const QInt&    Số bị trừ       
+ *	@return	 QInt			Kết quả sau khi trừ          
  */
 QInt QInt::operator-(const QInt& other)
 {
@@ -301,8 +301,8 @@ QInt QInt::operator*(const QInt& other)
 	QInt result;
 	QInt A;
 	QInt Q = other;
-	bool Q_1 = 0;
-	int k = BIT_IN_QINT;
+	bool Q_1 = 0;												
+	int k = BIT_IN_QINT;										
 
 	if (this->equalZero() || Q.equalZero())							//Một trong 2 mà nhan nhau bang 0 thì return result
 	{
@@ -311,7 +311,7 @@ QInt QInt::operator*(const QInt& other)
 
 	while (k > 0)
 	{
-		bool Q_0 = BitUtils::getBit(Q.data, 0);						//lấy Q_0 cua Q
+		bool Q_0 = BitUtils::getBit(Q.data,0);						//lấy Q_0 cua Q
 
 		if (Q_0 == true && Q_1 == false)							//Nếu 2 bit cuối Q_0 =1, Q_1 = 0
 		{
@@ -322,10 +322,10 @@ QInt QInt::operator*(const QInt& other)
 		{
 			A = A + *this;											//A+M->A
 		}
-
+								
 		Q_1 = Q_0;																	//Shift right[A,Q,Q_1]
 		Q = Q >> 1;																	//Q shift right
-		BitUtils::setBit(Q.data, BIT_IN_QINT - 1, BitUtils::getBit(A.data, 0));		//Lấy bit phải nhất của A bỏ qua bit trái nhất của Q vì đang dịch phải
+		BitUtils::setBit(Q.data,BIT_IN_QINT - 1,BitUtils::getBit(A.data,0));		//Lấy bit phải nhất của A bỏ qua bit trái nhất của Q vì đang dịch phải
 		A = A >> 1;																	//A shift right
 		k--;
 	}
@@ -356,15 +356,15 @@ QInt QInt::operator/(const QInt& other)
 		throw "Division by zero!";
 	}
 
-	if ((M - QInt("1", 10)).equalZero() || this->equalZero())							//Nếu số chia M hoặc số bị chia this bằng 0
+	if ( (M - QInt("1",10)).equalZero() || this->equalZero())							//Nếu số chia M hoặc số bị chia this bằng 0
 	{
-		return *this;
+		return *this;												
 	}
 
 	if ((Q.isNegative() && !M.isNegative() || (!Q.isNegative() && M.isNegative())))		//Nếu 2 số trái dấu
-	{
-		isNegative = true;
-	}
+	{																
+		isNegative = true;										
+	}																					
 
 	if (Q.isNegative())
 	{
@@ -378,11 +378,11 @@ QInt QInt::operator/(const QInt& other)
 
 	while (k > 0)
 	{
-		//Shift left[A,Q]
+																						//Shift left[A,Q]
 		A = A << 1;																		//Dịch trái A
-		BitUtils::setBit(A.data, 0, BitUtils::getBit(Q.data, BIT_IN_QINT - 1));			//Lấy bit trái nhất của Q bỏ qua  A vì đang dịch trái
+		BitUtils::setBit(A.data,0, BitUtils::getBit(Q.data, BIT_IN_QINT-1));			//Lấy bit trái nhất của Q bỏ qua  A vì đang dịch trái
 		Q = Q << 1;																		//Dịch trái Q
-
+		
 		A = A - M;														//A-M->A
 		if (A.isNegative())												//Nếu A < 0
 		{
@@ -433,9 +433,9 @@ bool QInt::operator<(const QInt& other)
 	{
 		return true;
 	}
-
+	
 	return false;
-}
+} 
 
 
 /**
@@ -445,7 +445,7 @@ bool QInt::operator<(const QInt& other)
  */
 bool QInt::operator==(const QInt& other)
 {
-	for (int i = 0; i < TOTAL_BLOCK; i++)						// So sánh lần lượt các block
+	for( int i = 0; i < TOTAL_BLOCK; i++)						// So sánh lần lượt các block
 	{
 		if (this->data[i] != other.data[i])
 		{
@@ -512,9 +512,9 @@ QInt& QInt::operator=(const QInt& other)
 
 /**
  *	operator& - Toán tử AND
- *	@param	 const QInt&		Số QInt truyền vào để thực hiện phép &
+ *	@param	 const QInt&		Số QInt truyền vào để thực hiện phép &	
  *	@return	 QInt				Kết quả sau khi thực hiện phép &
- */
+ */ 
 QInt QInt::operator&(const QInt& other)
 {
 	QInt result;
@@ -547,7 +547,7 @@ QInt QInt::operator|(const QInt& other)
 
 
 /**
- *	operator^ - Toán tử XOR
+ *	operator^ - Toán tử XOR 
  *	@param	 const QInt&		Số QInt truyền vào để thực hiện phép ^
  *	@return	 QInt				Lưu lại kết quả sau khi thực hiện phép ^
  */
@@ -565,8 +565,8 @@ QInt QInt::operator^(const QInt& other)
 
 
 /**
- *	operator~ - Toán tử NOT
- *	@param	 none
+ *	operator~ - Toán tử NOT 
+ *	@param	 none 
  *	@return	 QInt			Kết quả sau khi thực hiện phép ~
  */
 QInt QInt::operator~() const
@@ -621,7 +621,7 @@ QInt QInt::operator<<(const int& offset)
 
 
 /**
- *	Hàm rol - Thực hiện việc xoay trái dãy bit
+ *	Hàm rol - Thực hiện việc xoay trái dãy bit 
  *	@param	 none
  *	@return	 QInt		Lưu kết quả sau khi thực hiện xoay trái dãy bit
  */
@@ -645,7 +645,7 @@ QInt& QInt::rol(const int& offset)
 
 /**
  *	Hàm ror - Thực hiện việc xoay phải dãy bit
- *	@param	 none
+ *	@param	 none 
  *	@return	 QInt		Kết quả sau khi thực hiện phép xoay phải
  */
 QInt& QInt::ror(const int& offset)

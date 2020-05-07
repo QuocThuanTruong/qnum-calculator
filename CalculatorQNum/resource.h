@@ -7,6 +7,8 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_CALCULATORQNUM_DIALOG       102
 #define IDR_MAINFRAME                   128
+#define IDI_ICON1                       132
+#define IDB_BITMAP1                     134
 #define IDC_RD_QINT                     1000
 #define IDC_RD_QFLOAT                   1001
 #define IDC_EDT_OPERAND_1               1002
@@ -30,6 +32,11 @@
 #define IDC_GROUPBOX_1                  1024
 #define IDC_GROUPBOX_2                  1025
 #define IDC_CB_BITWISE                  1027
+#define IDC_BTN_FILE_IN                 1031
+#define IDC_RD_ON                       1032
+#define IDC_RD_OFF                      1033
+#define IDC_BTN_FILE_OUT                1034
+#define IDC_TV_CHOOSE_FILE              1035
 #define IDC_BTN_8                       1036
 #define IDC_BTN_5                       1037
 #define IDC_BTN_2                       1038
@@ -46,9 +53,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        132
+#define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1028
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

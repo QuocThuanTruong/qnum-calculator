@@ -5,7 +5,8 @@
 #include "QFloat.h"
 #include <string>
 #include <vector>
-#include <thread>
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 #pragma once
@@ -74,6 +75,10 @@ public:
 	afx_msg void OnBnClickedBtnBack();
 	afx_msg void OnSetfocusEdtOperand1();
 	afx_msg void OnSetfocusEdtOperand2();
+	afx_msg void OnBnClickedBtnFileIn();
+	afx_msg void OnBnClickedBtnFileOut();
+	afx_msg void OnBnClickedRdOn();
+	afx_msg void OnBnClickedRdOff();
 private:
 	CButton rdQInt;
 	CButton rdQFloat;
@@ -110,6 +115,8 @@ private:
 	CButton btnCE;
 	CButton btnBack;
 private:
+	string inFile;
+	string outFile;
 	int dialogLastFocused;
 	int radioLastChose;
 	int cbConvertLastChose;
@@ -129,4 +136,9 @@ private:
 	void convertBaseOperand(const int base);
 	void convertBaseResult();
 	void doBitwise();
+	void executeQInt(string srcQInt);
+	void executeQFloat(string srcQFloat);
+	BOOL executeFile();
+	CButton rdOn;
+	CButton rdOff;
 };
