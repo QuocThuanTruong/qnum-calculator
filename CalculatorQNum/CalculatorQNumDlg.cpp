@@ -1816,13 +1816,21 @@ void CCalculatorQNumDlg::executeQInt(string srcQInt)
 		}
 	}
 
-	for (int i = 0; i < bOpSize; i++)					// Tìm toán tử 2 ngôi có trong mảng quy định
+	for (int i = 0; i < bOpSize; i++)					// Tìm toán tử 2 ngôi có trong mảng quy định toán tử nằm giữ 2 khoảng trắng VD: -10 + 30 -> operator +
 	{
 		int pos = srcQInt.find(bOperator[i], 0);
 
 		if (pos != string::npos)
 		{
-			if (srcQInt[pos - 1] == ' ' && srcQInt[pos + 1] == ' ')
+			if (bOperator[i] == "-")
+			{
+				if (srcQInt[pos - 1] == ' ' && srcQInt[pos + 1] == ' ')
+				{
+					operatorType = 2;
+					break;
+				}
+			}
+			else
 			{
 				operatorType = 2;
 				break;
