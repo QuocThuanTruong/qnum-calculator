@@ -463,7 +463,7 @@ void CCalculatorQNumDlg::OnBnClickedRdDec()
 
 	cbConvert.SetCurSel(0);
 	
-	if (rdQInt.GetCheck() == TRUE)					// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
+	if (rdQInt.GetCheck() == TRUE)					// Giữ nguyên phép toán đã chọn
 	{
 		if (cbConvertLastChose != 0)
 		{
@@ -487,7 +487,11 @@ void CCalculatorQNumDlg::OnBnClickedRdDec()
 		OnCbnSelchangeCbConvert();
 	}
 
-	convertBaseOperand(10);
+	if (isValidOp1() && isValidOp2())				// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
+	{
+		convertBaseOperand(10);
+	}
+
 	enableHexKey(FALSE);
 	enableDecKey();
 
@@ -512,7 +516,7 @@ void CCalculatorQNumDlg::OnBnClickedRdBin()
 
 	cbConvert.SetCurSel(0);
 
-	if (rdQInt.GetCheck() == TRUE)						// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
+	if (rdQInt.GetCheck() == TRUE)						// Giữ nguyên phép toán đã chọn
 	{
 		if (cbConvertLastChose != 0)
 		{
@@ -540,7 +544,11 @@ void CCalculatorQNumDlg::OnBnClickedRdBin()
 		OnCbnSelchangeCbConvert();
 	}
 
-	convertBaseOperand(2);
+	if (isValidOp1() && isValidOp2())					// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
+	{
+		convertBaseOperand(2);
+	}
+
 	enableHexKey(FALSE);
 	enableDecKey(FALSE);
 
@@ -562,7 +570,7 @@ void CCalculatorQNumDlg::OnBnClickedRdHex()
 
 	cbConvert.SetCurSel(0);
 
-	if (cbConvertLastChose != 0)
+	if (cbConvertLastChose != 0)											// Giữ nguyên phép toán đã chọn
 	{
 		if (radioLastChose == IDC_RD_BIN)
 		{
@@ -583,7 +591,11 @@ void CCalculatorQNumDlg::OnBnClickedRdHex()
 		OnCbnSelchangeCbBitwise();
 	}
 
-	convertBaseOperand(16);
+	if (isValidOp1() && isValidOp2())										// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
+	{
+		convertBaseOperand(16);
+	}
+
 	enableHexKey();
 	enableDecKey();
 
@@ -664,12 +676,46 @@ void CCalculatorQNumDlg::OnCbnSelchangeCbBitwise()
 void CCalculatorQNumDlg::OnEnChangeEdtOperand1()
 {
 	UpdateData();
+
+	// Kiểm tra tính hợp lệ của Operand 1 và 2
+	if (!isValidOp1())
+	{
+		if (!isValidOp2())
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 and 2 is invalid!");
+			return;
+		}
+		else
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 is invalid!");
+			return;
+		}
+	}
+
+	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"");
 }
 
 // Hàm bắt sự kiện khi edit box operand 2 thay đổi
 void CCalculatorQNumDlg::OnEnChangeEdtOperand2()
 {
 	UpdateData();
+
+	// Kiểm tra tính hợp lệ của Operand 1 và 2
+	if (!isValidOp2())
+	{
+		if (!isValidOp1())
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 and 2 is invalid!");
+			return;
+		}
+		else
+		{
+			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 2 is invalid!");
+			return;
+		}
+	}
+
+	GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"");
 }
 
 // Hàm bắt sự kiện khi edtOperand1 được focus - Lưu lại view đã focus
@@ -1136,8 +1182,16 @@ void CCalculatorQNumDlg::OnBnClickedBtnResult()
 		// Kiểm tra tính hợp lệ của Operand 1 và 2
 		if (!isValidOp1())
 		{
-			GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 is invalid!");
-			return;
+			if (!isValidOp2())
+			{
+				GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 and 2 is invalid!");
+				return;
+			}
+			else
+			{
+				GetDlgItem(IDC_EDT_RESULT)->SetWindowTextW(L"Input of operand 1 is invalid!");
+				return;
+			}
 		}
 
 		if (!isValidOp2())
