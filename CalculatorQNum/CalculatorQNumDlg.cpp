@@ -468,28 +468,26 @@ void CCalculatorQNumDlg::OnBnClickedRdDec()
 		if (cbConvertLastChose != 0)
 		{
 			cbConvert.SetCurSel(cbConvertLastChose);
-			convertBaseOperand(10);
 			OnCbnSelchangeCbConvert();
 		}
 		else if (cbOperatorLastChoose != 0)
 		{
 			cbOperator.SetCurSel(cbOperatorLastChoose);
-			convertBaseOperand(10);
 			OnCbnSelchangeCbOperator();
 		}
 		else if (cbBitwiseLastChoose != 0)
 		{
 			cbBitwise.SetCurSel(cbBitwiseLastChoose);
-			convertBaseOperand(10);
 			OnCbnSelchangeCbBitwise();
 		}
+
 	}
 	else											// Nếu ở số thực thì chỉ chuyển đổi qua lại Bin và Dec
 	{
-		convertBaseOperand(10);
 		OnCbnSelchangeCbConvert();
 	}
 
+	convertBaseOperand(10);
 	enableHexKey(FALSE);
 	enableDecKey();
 
@@ -524,28 +522,25 @@ void CCalculatorQNumDlg::OnBnClickedRdBin()
 			}																	// Tức là chọn Bin ở rdHex thì qua rdBin sẽ chuyển ngược về Hex
 
 			cbConvert.SetCurSel(cbConvertLastChose);
-			convertBaseOperand(2);
 			OnCbnSelchangeCbConvert();
 		}
 		else if (cbOperatorLastChoose != 0)
 		{
 			cbOperator.SetCurSel(cbOperatorLastChoose);
-			convertBaseOperand(2);
 			OnCbnSelchangeCbOperator();
 		}
 		else if (cbBitwiseLastChoose != 0)
 		{
 			cbBitwise.SetCurSel(cbBitwiseLastChoose);
-			convertBaseOperand(2);
 			OnCbnSelchangeCbBitwise();
 		}
 	}
 	else												// Nếu ở số thực thì chỉ chuyển đổi qua lại Bin và Dec
 	{
-		convertBaseOperand(2);
 		OnCbnSelchangeCbConvert();
 	}
 
+	convertBaseOperand(2);
 	enableHexKey(FALSE);
 	enableDecKey(FALSE);
 
@@ -575,22 +570,20 @@ void CCalculatorQNumDlg::OnBnClickedRdHex()
 		}																	// Tức là chọn Dec ở rdBin thì qua rdHex sẽ vẫn chọn Dec
 
 		cbConvert.SetCurSel(cbConvertLastChose);
-		convertBaseOperand(16);
 		OnCbnSelchangeCbConvert();
 	}
 	else if (cbOperatorLastChoose != 0)
 	{
 		cbOperator.SetCurSel(cbOperatorLastChoose);
-		convertBaseOperand(16);
 		OnCbnSelchangeCbOperator();
 	}
 	else if (cbBitwiseLastChoose != 0)
 	{
 		cbBitwise.SetCurSel(cbBitwiseLastChoose);
-		convertBaseOperand(16);
 		OnCbnSelchangeCbBitwise();
 	}
 
+	convertBaseOperand(16);
 	enableHexKey();
 	enableDecKey();
 
