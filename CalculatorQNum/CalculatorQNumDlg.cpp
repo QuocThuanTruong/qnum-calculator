@@ -462,6 +462,8 @@ void CCalculatorQNumDlg::OnBnClickedRdDec()
 	}
 
 	cbConvert.SetCurSel(0);
+
+	convertBaseOperand(10);
 	
 	if (rdQInt.GetCheck() == TRUE)					// Giữ nguyên phép toán đã chọn
 	{
@@ -487,11 +489,6 @@ void CCalculatorQNumDlg::OnBnClickedRdDec()
 		OnCbnSelchangeCbConvert();
 	}
 
-	if (isValidOp1() && isValidOp2())				// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
-	{
-		convertBaseOperand(10);
-	}
-
 	enableHexKey(FALSE);
 	enableDecKey();
 
@@ -515,6 +512,8 @@ void CCalculatorQNumDlg::OnBnClickedRdBin()
 	}
 
 	cbConvert.SetCurSel(0);
+
+	convertBaseOperand(2);
 
 	if (rdQInt.GetCheck() == TRUE)						// Giữ nguyên phép toán đã chọn
 	{
@@ -544,11 +543,6 @@ void CCalculatorQNumDlg::OnBnClickedRdBin()
 		OnCbnSelchangeCbConvert();
 	}
 
-	if (isValidOp1() && isValidOp2())					// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
-	{
-		convertBaseOperand(2);
-	}
-
 	enableHexKey(FALSE);
 	enableDecKey(FALSE);
 
@@ -570,6 +564,8 @@ void CCalculatorQNumDlg::OnBnClickedRdHex()
 
 	cbConvert.SetCurSel(0);
 
+	convertBaseOperand(16);
+
 	if (cbConvertLastChose != 0)											// Giữ nguyên phép toán đã chọn
 	{
 		if (radioLastChose == IDC_RD_BIN)
@@ -590,12 +586,7 @@ void CCalculatorQNumDlg::OnBnClickedRdHex()
 		cbBitwise.SetCurSel(cbBitwiseLastChoose);
 		OnCbnSelchangeCbBitwise();
 	}
-
-	if (isValidOp1() && isValidOp2())										// Chuyển đổi cơ số toán hạng và kết quả phù hợp với các lựa chọn ở combo box nếu ở số nguyên
-	{
-		convertBaseOperand(16);
-	}
-
+	
 	enableHexKey();
 	enableDecKey();
 
