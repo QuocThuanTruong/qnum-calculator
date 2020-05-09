@@ -1776,7 +1776,7 @@ void CCalculatorQNumDlg::doBitwise()
 			_result = _operand_1 ^ _operand_2;
 			break;
 		case 4: // NOT
-			_result = ~ _operand_2;
+			_result = ~ _operand_1;
 			break;
 		case 5: // SHL
 			_result = _operand_1 << stoi(QInt::convertQIntToDec(_operand_2));
