@@ -413,7 +413,7 @@ QInt QInt::operator/(const QInt& other)
  */
 bool QInt::operator>(const QInt& other)
 {
-	if (((*this) - other).isNegative())							//Trừ nhau ra dương thì return true
+	if (((*this) - other).isNegative() || ((*this) - other).equalZero())	//Trừ nhau ra dương thì return true
 	{
 		return false;
 	}
