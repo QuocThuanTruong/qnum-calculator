@@ -28,7 +28,7 @@ string IntegerStringUtils::convertDecToBin(string srcDec)
 		QInt temp(result, 2);							// Chuyển chuỗi kết quả sang QInt	
 		temp = QInt::convertToTwoComplement(temp);		// Chuyển QInt sang dạng bù 2
 		result = QInt::convertQIntToBin(temp);			// Chuyển QInt bù 2 sang chuỗi nhị phân
-	}													
+	}
 
 	return result;
 }
@@ -194,6 +194,26 @@ string IntegerStringUtils::convertBinToHex(string src)
 }
 
 /**
+ *	Hàm convertBinToDec - Hàm chuyển dổi chuỗi nhị phân sang thập phân
+ *	@param	 string		Chuỗi nhị phân cần chuyển
+ *	@return	 string		Chuỗi thập phân kết quả
+ */
+string IntegerStringUtils::convertBinToDec(string src)
+{
+	string result = "0";
+
+	for (int i = src.size() - 1; i >= 0; i--)			// Duyệt bit của src và chuyển về dạng thập phân theo công thức hệ cơ số q tổng quát
+	{
+		if (src[i] == '1')
+		{
+			result = SUtils::addTwoPositiveIntegerString(result, SUtils::powerOfTwo((src.size() - 1) - i));		// VD: 2^0 + 2^1 + 2^xxx...
+		}
+	}
+
+	return result;
+}
+
+/**
  *	Hàm convertFractionPartToBin - Hàm chuyển dổi phần thập phân của số thực sang nhị phân
  *	@param	 string		Phần chuỗi thập phân cần chuyển
  *	@return	 string		Chuỗi nhị phân kết quả
@@ -240,13 +260,13 @@ string IntegerStringUtils::convertFractionPartToBin(string srcFrac)
 	{																		// Làm tròn theo quy tắc làm tròn lên *Round to nearest, ties to even (default in floating point)
 		int numResidual = 3;												// VD: 11.5 -> 12, 12.5 -> 12 tương tự cho số âm
 		string residual = "";
-		bool isRoundUp = false;											
+		bool isRoundUp = false;
 
 		while (numResidual > 0)												// Lấy thêm 3 số thừa phía sau nếu có 
 		{
 			string newFrac = SUtils::mulOfPositiveIntegerAndTwo(srcFrac);	// Cách làm tương tự như việc lấy 112 bits
 
-			if (newFrac.size() > srcFrac.size())							
+			if (newFrac.size() > srcFrac.size())
 			{
 				residual += '1';
 				srcFrac = newFrac.substr(1, srcFrac.size());
@@ -348,7 +368,7 @@ bool IntegerStringUtils::isNegative(const string& src)
 string IntegerStringUtils::addTwoPositiveIntegerString(string srcA, string srcB)
 {
 	int lenA, lenB;
-	int carry = 0;					
+	int carry = 0;
 	string result = "";
 
 	if (srcA.size() < srcB.size())						// Nếu chiều dài A < B thì hoán vị vì ta mặc định chiều dài A luôn lớn hơn B
@@ -361,7 +381,7 @@ string IntegerStringUtils::addTwoPositiveIntegerString(string srcA, string srcB)
 
 	for (int i = 0; i < lenB; i++)						// Cộng chuỗi B cho A (vì len A dài hơn)
 	{
-		int sum = (srcB[lenB - i - 1] - '0') + (srcA[lenA - i - 1] - '0') + carry;		
+		int sum = (srcB[lenB - i - 1] - '0') + (srcA[lenA - i - 1] - '0') + carry;
 		result = (char)(sum % 10 + '0') + result;
 		carry = sum / 10;
 	}
@@ -394,7 +414,7 @@ string IntegerStringUtils::mulOfPositiveIntegerAndTwo(string src)
 	for (int i = src.size() - 1; i >= 0; i--)		// Lần luọt nhân 2 cho từng số ở chuỗi A nếu có nhớ thì cộng biến nhớ
 	{
 		int mul = (src[i] - '0') * 2 + carry;
-		result = (char)(mul % 10 + '0') + result;	
+		result = (char)(mul % 10 + '0') + result;
 		carry = mul / 10;
 	}
 

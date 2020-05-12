@@ -80,7 +80,7 @@ void QFloat::printQFloat(const int base)
 /**
  *	Ham convertDecToQFloat - Hàm chuyển đổi chuỗi thập phân sang số QFloat
  *	@param	 string		Chuỗi thập phân cần chuyển
- *	@return	 QFloat	    Số QFloat 
+ *	@return	 QFloat	    Số QFloat
  */
 QFloat QFloat::convertDecToQFloat(const string& src)
 {
@@ -127,9 +127,9 @@ QFloat QFloat::convertDecToQFloat(const string& src)
 			fracPartBin = fracPartBin.substr(2, BIT_IN_SIGNIFICAND);					// Lấy phần phân số
 			intPartBin = QInt::convertQIntToBin(QInt(intPartBin, 2) + QInt("1", 10));	// VD: 1010.1111 -> Làm tròn 1011.0000
 		}
-	
-		exp = intPartBin.size() - 1;			
-		
+
+		exp = intPartBin.size() - 1;
+
 		if (exp > BIAS)																	// Tránh tràn số ( vì mũ dương lớn nhất là BIAS) ->  Đây là số Inf
 		{
 			exp = BIAS;
@@ -160,10 +160,10 @@ QFloat QFloat::convertDecToQFloat(const string& src)
 			}
 			else																		// Ngược lại lấy gán thằng tạm cho thằng hiện tại khi chưa vượt quá 1
 			{
-				fracPartDec = newFracDec; 
+				fracPartDec = newFracDec;
 			}
 		}
-		
+
 		srcSignificandBin = SUtils::convertFractionPartToBin(fracPartDec);				// Chuyển phần định trị về nhị phân
 
 		if (srcSignificandBin.find('.', 0) != string::npos)								// Nếu làm tròn lên tràn qua phần thập phân thì mũ + 1
@@ -286,7 +286,7 @@ string QFloat::convertQFloatToDec(QFloat src)
 			{
 				fracPartBin = '0' + fracPartBin;
 			}
-			exp++;																		
+			exp++;
 		}
 		else																			// Ngược lại mũ dương thì dời dấu chấm sang phải
 		{
@@ -313,7 +313,7 @@ string QFloat::convertQFloatToDec(QFloat src)
 		fracPartBin += '0';
 	}
 
-	intPartDec = QInt::convertQIntToDec(QInt(intPartBin, 2));							// Chuyển phần nguyên về thập phân
+	intPartDec = SUtils::convertBinToDec(intPartBin);									// Chuyển phần nguyên về thập phân
 
 	posOfLastOne = fracPartBin.find_last_of('1');										// Tìm số 1 cuối cùng ở phần phân số để chuyển về thập phân
 
@@ -324,7 +324,7 @@ string QFloat::convertQFloatToDec(QFloat src)
 		for (int i = posOfLastOne; i >= 0; i--)											// Duyệt các số tiếp theo đến đầu chuỗi
 		{																				// Độ dài thực tế khi nhân 2 số thực: VD: 5(0.5) x 5(0.5) = 25(0.25) -> expectedLen = 2
 			int expectedLen = posOfLastOne - i + 1;										// Độ dài tăng lên 1 mỗi lần lặp vì ta nhân thêm 0.5 cho nó:  5 x 25 = 125 -> expectedLen = 3
-																						
+
 			if (fracPartBin[i] == '1')													// Nếu là bit 1 thì ta cộng 1 + phần phân số đã nhân phía trước như ví dụ
 			{
 				fracPartDec = '1' + fracPartDec;
@@ -334,7 +334,7 @@ string QFloat::convertQFloatToDec(QFloat src)
 
 			for (int i = 0; i < expectedLen - fracPartDec.size(); i++)					// Nếu chuỗi kết quả < expectedLen, ta thêm 0 và đầu vì nếu tính theo số thực: 0.5 x 0.125 = 0.0625
 			{																			// Nhưng khi tính ở đây ta chỉ lấy 5 x 125 = 625 -> thiếu số 0
-				fracPartDec = '0' + fracPartDec;										 
+				fracPartDec = '0' + fracPartDec;
 			}
 		}
 
